@@ -244,26 +244,19 @@ else:
 
 st.markdown("---")
 
-
 # STATISTICS
 st.markdown("### 📊 Statistics")
-
-colA, colB, colC = st.columns(3)
-
+colA, colB = st.columns(2)
 with colA:
-    st.metric("Vote Average", round(movie.get("vote_average", 0), 1))
-
+    st.metric("Vote Count", movie.get("vote_count", "N/A"))
 with colB:
-    st.metric("Vote Count", movie.get("vote_count", "N/A")
+    st.metric("Popularity", movie.get("popularity", "N/A"))
 
-with colC:
-    st.metric("Popularity", round(movie.get("popularity", 0), 2))
-
-
-
-# COMPARE MOVIE
+# MEMBANDINGKAN FILM
 st.markdown("🔍 Compare With Another Movie")
 compare_query = st.text_input("Search movie to compare")
+
+
 
 if compare_query.strip():
     results = search_movies(compare_query.strip())[:5]
@@ -272,80 +265,45 @@ if compare_query.strip():
             st.session_state["compare_movie"] = item["id"]
             st.rerun()
 
-
 if "compare_movie" in st.session_state and st.session_state["compare_movie"] is not None:
     other_movie = get_movie_details(st.session_state["compare_movie"])
 
-    st.subheader(f"📈 Comparison Result: {title} VS {other_movie.get('title', 'Unknown')}"
-    )
+    st.subheader(f"📈 Comparison Result: {title} VS {other_movie.get('title', 'Unknown')}")
+    st.write(f"**{title}** — Vote: {movie.get('vote_count')} | Popularity: {movie.get('popularity')}")
+    st.write(f"**{other_movie.get('title', 'Unknown')}** — Vote: {other_movie.get('vote_count')} | Popularity: {other_movie.get('popularity')}")
 
-    st.write(
-        f"**{title}** — "
-        f"Avg: {movie.get('vote_average')} | "
-        f"Votes: {movie.get('vote_count')} | "
-        f"Popularity: {movie.get('popularity')}"
-    )
 
-    st.write(
-        f"**{other_movie.get('title', 'Unknown')}** — "
-        f"Avg: {other_movie.get('vote_average')} | "
-        f"Votes: {other_movie.get('vote_count')} | "
-        f"Popularity: {other_movie.get('popularity')}"
-    )
-
-    # DATAFRAME
     data = {
-        "Film": [title, other_movie.get("title", "Unknown")],
-        "Vote Average": [
-            movie.get("vote_average", 0),
-            other_movie.get("vote_average", 0)
-        ],
-        "Vote Count": [
-            movie.get("vote_count", 0),
-            other_movie.get("vote_count", 0)
-        ],
-        "Popularity": [
-            movie.get("popularity", 0),
-            other_movie.get("popularity", 0)
-        ]
-    }
-
+    "Film": [title, other_movie.get("title", "Unknown")],
+    "Vote Count": [movie.get("vote_count"), other_movie.get("vote_count")],
+    "Popularity": [movie.get("popularity"), other_movie.get("popularity")]
+}
     st.dataframe(pd.DataFrame(data), use_container_width=True)
 
-    labels = data["Film"]
-    avg_values = data["Vote Average"]
-    vote_values = data["Vote Count"]
-    pop_values = data["Popularity"]
+    labels = [title, other_movie.get("title", "Unknown")]
+    vote_values = [movie.get("vote_count", 0), other_movie.get("vote_count", 0)]
+    pop_values = [movie.get("popularity", 0), other_movie.get("popularity", 0)]
 
-    # =======================
-    # GRAPH COMPARISON
-    # =======================
     st.subheader("📊 Graph Comparison")
-
-    colC, colD, colE = st.columns(3)
+    colC, colD = st.columns(2)
 
     with colC:
-        st.write("### Vote Average")
+    # Bar chart Vote Count (small)
+        st.write("### Vote Count Comparison")
         fig1, ax1 = plt.subplots()
-        ax1.bar(labels, avg_values)
-        ax1.set_ylabel("Average Rating")
-        ax1.set_ylim(0, 10)
+        ax1.bar(labels, vote_values)
+        ax1.set_ylabel("Vote Count")
+        ax1.set_title("Vote Count")
         st.pyplot(fig1)
 
     with colD:
-        st.write("### Vote Count")
+    # Bar chart Popularity (small)
+        st.write("### Popularity Comparison")
         fig2, ax2 = plt.subplots()
-        ax2.bar(labels, vote_values)
-        ax2.set_ylabel("Vote Count")
+        ax2.bar(labels, pop_values)
+        ax2.set_ylabel("Popularity")
+        ax2.set_title("Popularity")
         st.pyplot(fig2)
-
-    with colE:
-        st.write("### Popularity")
-        fig3, ax3 = plt.subplots()
-        ax3.bar(labels, pop_values)
-        ax3.set_ylabel("Popularity")
-        st.pyplot(fig3)
-
 
 
 
