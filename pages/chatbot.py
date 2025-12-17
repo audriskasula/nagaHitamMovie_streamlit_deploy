@@ -40,7 +40,7 @@ st.markdown("""
 # DarkMode
 apply_theme()
 
-API_KEY = "AIzaSyDvi_Yd3YOuocMeGInsyylRdcMwAYvJouk"
+API_KEY = st.secrets["GENAI_API_KEY"]
 genai.configure(api_key=API_KEY)
 
 # TITLE

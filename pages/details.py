@@ -7,8 +7,8 @@ from darkmode import apply_theme
 from comments_db import init_comments_table
 from comment import comment_section
 
-API_KEY = "6c8c7672f51a4693dac99ce5037660d"
-BEARER = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2YzhjNzY3MmY1MWE0NjkzZGNhYzk5YzVlMDM3NjYwZCIsIm5iZiI6MTc2MzM5NjkxNC40NCwic3ViIjoiNjkxYjRkMzI4ODQzNDlkZDE5ODFjMmFiIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.ulsldmsvOuLJryPScJrSHyihLdoGTQnppqmrh7RZR6I"
+API_KEY = st.secrets["TMDB_API_KEY"]
+BEARER = st.secrets["TMDB_BEARER"]
 
 headers = {"accept": "application/json", "Authorization": f"Bearer {BEARER}"}
 
